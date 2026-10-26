@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block titulo %}Lista de desejos – Livraria{% endblock %}
+{% block conteudo %}
+  <h1>Lista de desejos</h1>
+  {% if itens %}
+    <p class="suave">Livros que você salvou para decidir com calma antes de comprar.</p>
+    <ul class="lista">
+      {% for item in itens %}
+        <li class="cartao">
+          <div class="linha">
+            <a class="titulo" href="{{ url_for('livros.detalhe', isbn=item.livro.isbn) }}">{{ item.livro.titulo }}</a>
+            <span class="preco">{{ item.livro.preco | moeda }}</span>
+          </div>
+          <p class="suave">{{ item.livro.autor }}</p>
+          <div class="linha">
+            {% if item.disponivel %}
+              <span class="sim">Disponível em alguma loja</span>
+            {% else %}
+              <span class="nao">Esgotado em todas as lojas</span>
+            {% endif %}
+            <form method="post" action="{{ url_for('desejos.remover', isbn=item.livro.isbn) }}">
+              <button class="secundario">Remover</button>
+            </form>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+    <p class="preco grande">Total da lista: {{ total | moeda }}</p>
+  {% else %}
+    <p class="suave">Sua lista está vazia. Abra um livro e toque em "Salvar na lista de desejos".</p>
+    <p><a href="{{ url_for('livros.buscar') }}">Buscar livros</a></p>
+  {% endif %}
+{% endblock %}
